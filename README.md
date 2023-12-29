@@ -1,0 +1,2 @@
+Este é um servidor que recebe as requisições de alerta do botão do panico nos consultórios.
+Quando o alerta é recebido, a aplicação emite um sinal sonoro e ele também indica de qual consultório o alerta foi emitido
