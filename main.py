@@ -1,29 +1,41 @@
 import socket
+import pyaudio
+import wave
+from threading import Thread
 from tkinter import *
 
-#import requests
 
 IP_SERVIDOR = '10.16.90.122'
-
+stream = None
 
 class Application:
     def __init__(self, root):
         self.root = root
+        self.janela()
         self.tela()
-        # self.ip_do_servidor = "192.168.0.1"
-        self.porta_do_servidor = 8080
-        self.criar_interface()
+        self.botao()
+        self.cor_padrao = 'black'
+        self.cor_alerta = 'red'
+        self.servidor = True
 
-    def tela(self):
-        self.root.title('Botão de Emergência')
+        self.server_thread = Thread(target=self.start_server)
+        self.server_thread.start()
+
+    def janela(self):
+        # cria a janela
+        self.root.title('Servidor de Emergencias')
         self.root.configure(background='white')
 
-        self.root.columnconfigure(0, weight=1)
-        self.root.rowconfigure(0, weight=1)
-        self.root.rowconfigure(1, weight=1)
+        # cria a tela para exibir o texto "Consultorio1"
 
-        largura = 400
-        altura = 400
+    def tela(self):
+        self.tela_consultorio = Label(self.root, text='Consultorio1')
+        self.tela_consultorio.place(x=5, y=5, width=100, height=85)
+        self.tela_consultorio.config(font=('Arial', 13))
+
+        # define o tamanho da tela para o padrao full HD 1920 x 1080
+        largura = 800
+        altura = 800
         largura_tela = self.root.winfo_screenwidth()
         altura_tela = self.root.winfo_screenheight()
         x = (largura_tela - largura) // 2
@@ -32,62 +44,121 @@ class Application:
 
         self.root.resizable(False, False)
 
-    def criar_interface(self):
-        self.criar_botao()
-        self.criar_rotulo()
+        # cria o botao "Stop"
 
-    def criar_botao(self):
-        texto_do_botao = 'Chamar'
-        tamanho_fonte = 16
+    def botao(self):
+        self.botao_stop = Button(self.root, text='Parar')
+        self.botao_stop.config(font=('Arial', 20))
+        self.botao_stop.place(x=5, y=100, width=100, height=50)
 
-        botao = Button(
-            self.root,
-            text=texto_do_botao,
-            command=self.clique_do_botao,
-            font=('Arial', tamanho_fonte),
-        )
-        botao.grid(row=0, column=0, pady=20, padx=20, sticky='nsew')
+        self.botao_stop.bind('<Button-1>', lambda event: self.receber_requisicao(event))
 
-    def criar_rotulo(self):
-        self.rotulo_var = StringVar()
-        rotulo = Label(
-            self.root, textvariable=self.rotulo_var, font=('Arial', 14)
-        )
-        rotulo.grid(row=1, column=0, pady=20, padx=20, sticky='nsew')
+    def start_server(self):
+        # Cria um socket TCP/IP
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    def clique_do_botao(self):
-        self.enviar_chamado()
+        # Associa o socket a uma porta
+        sock.bind((IP_SERVIDOR, 8080))
 
-    def enviar_chamado(self):
+        # coloca o socket em modo de escuta
+        sock.listen(1)
+
+        while self.servidor:
+            try:
+                # Aceita a conexao de um cliente
+                connection, address = sock.accept()
+
+                # Recebe a requisicao do cliente
+                request = connection.recv(1024).decode()
+
+                # verifica o tipo de requisicao
+                if request == 'alerta':
+
+                    self.tela_consultorio.config(foreground=self.cor_alerta)
+
+                    # Cria um objeto pyaudio
+                    p = pyaudio.PyAudio()
+
+                    # Abre o arquivo de audio
+                    global stream  # Refere-se à variável global stream
+                    stream = p.open(format=pyaudio.paInt16, channels=1, rate=44100, output=True)
+
+                    # Le o arquivo de audio
+                    with wave.open('Servidor-Botao-Panico-main\Alerta.wav', 'rb') as wavfile:
+                        (nchannels, sampwidth, framerate, nframes, comptype, compname) = wavfile.getparams()
+                        audio_data = wavfile.readframes(nframes)
+
+                    # Envia os dados do audio para o cliente
+                    stream.write(audio_data)
+
+                     # Envia uma resposta ao cliente
+                    connection.sendall('Chamado recebido!'.encode())
+
+                    # Altera o estado do botao para 'disabled'
+                    self.botao_stop['state'] = 'disabled'
+
+                else:
+                    # Envia uma resposta ao cliente
+                    connection.sendall('ERRO'.encode())
+
+                # fecha a conexao com o cliente
+                connection.close()
+            except Exception as e:
+                print('Erro no servidor:', e)
+
+
+    def parar_servidor(self):
+        self.servidor = False
+
+        # Verifica a cor da tela
+        cor_tela = self.tela_consultorio.cget('foreground')
+
+        # Altera a cor da tela para a cor padrão
+        if cor_tela == self.cor_alerta:
+            self.tela_consultorio.config(foreground=self.cor_padrao)
+
+        # Continua o servidor em execução
+        self.server_thread.start()
+
+    def receber_requisicao(self, event):
+        # Declara a variavel global stream
+        global stream
+        #altera a cor da tela pra vermelho
+        self.tela_consultorio.config(foreground=self.cor_alerta)
+        
+        # Altera o estado do botao para 'disabled'
+        self.botao_stop['state'] = 'disabled'
+        self.servidor = False
+
+        # Declara a variavel stream
+        stream = None
+
+        # Tenta criar o stream de audio
         try:
-            # Cria um socket TCP/IP
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-            # Conecta-se ao servidor
-            sock.connect((IP_SERVIDOR, 8080))
-
-            # Envia a requisição
-            sock.sendall('alerta'.encode())
-
-            # Recebe a resposta
-            resposta = sock.recv(1024).decode()
-
-            # Fecha a conexão
-            sock.close()
-
-            # Verifica a resposta
-            if resposta != 'ERRO':
-                self.rotulo_var.set('Chamado Enviado!')
-            else:
-                self.rotulo_var.set('Erro no Servidor')
+            p = pyaudio.PyAudio()
+            stream = p.open(format=pyaudio.paInt16, channels=1, rate=44100, output=True)
         except Exception as e:
-            self.rotulo_var.set('Sem Conexão com o Servidor')
-            #self.root.after(1000, self.enviar_chamado)
-            if resposta == None:
-                self.rotulo_var.set('Servidor Indisponivel')
+            print('Erro ao criar o stream:', e)
+
+        # Verifica se o stream já está em execução
+        if stream and stream.is_active():
+            # Fecha o stream de audio
+            stream.close()
+
+        # Altera o estado do botao para 'normal'
+        self.botao_stop['state'] = 'normal'
+
+    def mainloop(self):
+        #self.root.bind('<Button-1>', self.receber_requisicao)
+        self.root.mainloop()
+
+    def parar_piscar(self):
+        self.tela_consultorio.config
 
 
 if __name__ == '__main__':
     root = Tk()
-    Application(root)
+    app = Application(root)
+    #app.tela()
     root.mainloop()
+
