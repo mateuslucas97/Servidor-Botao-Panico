@@ -1,4 +1,4 @@
-import socket
+mport socket
 import pyaudio
 import wave
 from threading import Thread
@@ -20,22 +20,21 @@ class Application:
 
         self.server_thread = Thread(target=self.start_server)
         self.server_thread.start()
-
-    def janela(self):
-        # cria a janela
+        
+    # cria a janela
+    def janela(self):    
         self.root.title('Servidor de Emergencias')
         self.root.configure(background='white')
 
-        # cria a tela para exibir o texto "Consultorio1"
-
+    #Cria a tela para exibir o texto "Consultorio1"
     def tela(self):
         self.tela_consultorio = Label(self.root, text='Consultorio1')
         self.tela_consultorio.place(x=5, y=5, width=100, height=85)
         self.tela_consultorio.config(font=('Arial', 13))
 
         # define o tamanho da tela para o padrao full HD 1920 x 1080
-        largura = 800
-        altura = 800
+        largura = 600
+        altura = 600
         largura_tela = self.root.winfo_screenwidth()
         altura_tela = self.root.winfo_screenheight()
         x = (largura_tela - largura) // 2
@@ -44,14 +43,24 @@ class Application:
 
         self.root.resizable(False, False)
 
-        # cria o botao "Stop"
-
+    # cria o botao "Stop"
     def botao(self):
         self.botao_stop = Button(self.root, text='Parar')
         self.botao_stop.config(font=('Arial', 20))
         self.botao_stop.place(x=5, y=100, width=100, height=50)
 
-        self.botao_stop.bind('<Button-1>', lambda event: self.receber_requisicao(event))
+        # Liga o clique com o botão direito do mouse ao método parar_audio()
+        self.botao_stop.bind('<Button-3>', self.parar_audio)
+
+        # Liga o clique com o botão esquerdo do mouse ao método receber_requisicao()
+        self.botao_stop.bind('<Button-1>', self.receber_requisicao)
+        #self.botao_stop.bind('<Button-1>', lambda event: self.receber_requisicao(event))
+
+    def parar_audio(self, event):
+        # Verifica se o áudio está tocando
+        if stream and stream.is_active():
+            # Fecha o stream de áudio
+            stream.close()
 
     def start_server(self):
         # Cria um socket TCP/IP
@@ -92,10 +101,7 @@ class Application:
                     stream.write(audio_data)
 
                      # Envia uma resposta ao cliente
-                    connection.sendall('Chamado recebido!'.encode())
-
-                    # Altera o estado do botao para 'disabled'
-                    self.botao_stop['state'] = 'disabled'
+                    connection.sendall('Chamado recebido!'.encode())             
 
                 else:
                     # Envia uma resposta ao cliente
@@ -106,59 +112,25 @@ class Application:
             except Exception as e:
                 print('Erro no servidor:', e)
 
-
-    def parar_servidor(self):
-        self.servidor = False
-
-        # Verifica a cor da tela
-        cor_tela = self.tela_consultorio.cget('foreground')
-
-        # Altera a cor da tela para a cor padrão
-        if cor_tela == self.cor_alerta:
-            self.tela_consultorio.config(foreground=self.cor_padrao)
-
-        # Continua o servidor em execução
-        self.server_thread.start()
-
+    #Altera a cor da tela "Consultorio1" para preto
     def receber_requisicao(self, event):
-        # Declara a variavel global stream
-        global stream
         #altera a cor da tela pra vermelho
         self.tela_consultorio.config(foreground=self.cor_alerta)
-        
-        # Altera o estado do botao para 'disabled'
-        self.botao_stop['state'] = 'disabled'
-        self.servidor = False
 
-        # Declara a variavel stream
-        stream = None
-
-        # Tenta criar o stream de audio
-        try:
-            p = pyaudio.PyAudio()
-            stream = p.open(format=pyaudio.paInt16, channels=1, rate=44100, output=True)
-        except Exception as e:
-            print('Erro ao criar o stream:', e)
-
-        # Verifica se o stream já está em execução
+        # Verifica se o áudio está tocando
         if stream and stream.is_active():
-            # Fecha o stream de audio
+            # Fecha o stream de áudio
             stream.close()
 
-        # Altera o estado do botao para 'normal'
-        self.botao_stop['state'] = 'normal'
+        # Muda a cor da tela para preto
+        self.tela_consultorio.config(foreground=self.cor_padrao)
 
-    def mainloop(self):
-        #self.root.bind('<Button-1>', self.receber_requisicao)
-        self.root.mainloop()
 
-    def parar_piscar(self):
-        self.tela_consultorio.config
-
+def mainloop(self):
+    self.root.mainloop()
 
 if __name__ == '__main__':
     root = Tk()
     app = Application(root)
-    #app.tela()
     root.mainloop()
 
