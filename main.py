@@ -1,37 +1,31 @@
-import os
-import shutil
+import pathlib
 import socket
-import playsound
-import tempfile
 from threading import Thread
 from tkinter import *
-from playsound import playsound
+import pygame
 
-
+#variavel global quedefine o endereço IP para o servidor
 IP_SERVIDOR = '10.16.90.122'
 
 class Application:
+    #construtores da classe principal
     def __init__(self, root):
         self.root = root
         self.janela()
-        self.tela()
-        self.botao()
+        self.tela1()
+        self.tela2()
+        self.botao1()
+        self.botao2()
         self.cor_padrao = 'black'
         self.cor_alerta = 'red'
         self.servidor = True
-
         self.server_thread = Thread(target=self.start_server)
         self.server_thread.start()
 
+    #cria a janela principal da aplicação
     def janela(self):
         self.root.title('Servidor de Emergencias')
         self.root.configure(background='white')
-
-    def tela(self):
-        self.tela_consultorio = Label(self.root, text='Consultorio1')
-        self.tela_consultorio.place(x=5, y=5, width=100, height=85)
-        self.tela_consultorio.config(font=('Arial', 13))
-
         largura = 600
         altura = 600
         largura_tela = self.root.winfo_screenwidth()
@@ -39,32 +33,61 @@ class Application:
         x = (largura_tela - largura) // 2
         y = (altura_tela - altura) // 2
         self.root.geometry(f'{largura}x{altura}+{x}+{y}')
-
         self.root.resizable(False, False)
 
-    def botao(self):
-        self.botao_stop = Button(self.root, text='Parar')
-        self.botao_stop.config(font=('Arial', 20))
-        self.botao_stop.place(x=5, y=100, width=100, height=50)
+    #cria a tela de identificação de cada consultório
+    def tela1(self):
+        self.tela_consultorio1 = Label(self.root, text='Consultorio1')
+        self.tela_consultorio1.place(x=5, y=5, width=100, height=85)
+        self.tela_consultorio1.config(font=('Arial', 13))
 
-        self.botao_stop.bind('<Button-1>', self.receber_requisicao)
+    #cria o botão parar para cada consultório
+    def botao1(self):
+        self.botao_stop1 = Button(self.root, text='Parar')
+        self.botao_stop1.config(font=('Arial', 20))
+        self.botao_stop1.place(x=5, y=100, width=100, height=50)
+        self.botao_stop1.bind('<Button-1>', self.receber_requisicao)
+    
+    def tela2(self):
+        self.tela_consultorio2 = Label(self.root, text='Consultorio2')
+        self.tela_consultorio2.place(x=110, y=5, width=100, height=85)
+        self.tela_consultorio2.config(font=('Arial', 13))
 
+    #cria o botão parar para cada consultório
+    def botao2(self):
+        self.botao_stop2 = Button(self.root, text='Parar')
+        self.botao_stop2.config(font=('Arial', 20))
+        self.botao_stop2.place(x=110, y=100, width=100, height=50)
+        self.botao_stop2.bind('<Button-1>', self.receber_requisicao)
+
+    #incia a conexão cliente-servidor recebendo requisições de alerta fazendo o audio de alerta ser tocado
     def start_server(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.bind((IP_SERVIDOR, 8080))
         sock.listen(1)
-
+        # Inicializa o mixer
+        pygame.mixer.init()
+        
         while self.servidor:
             try:
                 connection, address = sock.accept()
 
                 request = connection.recv(1024).decode()
+                
+                # Identifica o número do consultório
+                consultorio = request.split('-')[0]
 
-                if request == 'alerta':
-                    self.tela_consultorio.config(foreground=self.cor_alerta)
+                if request == 'alerta-' + consultorio:
+                    # Aciona a tela correta
+                    if consultorio == 'consultorio1':
+                        self.tela_consultorio1.config(foreground=self.cor_alerta)
+                    else:
+                        self.tela_consultorio2.config(foreground=self.cor_alerta)
 
                     # Reproduzir o áudio
-                    playsound('Servidor-Botao-Panico-main\Alerta.wav')
+                    arquivo = pathlib.Path(__file__).parent / 'Alerta.wav'
+                    som = pygame.mixer.Sound(arquivo)
+                    som.play()
 
                 else:
                     connection.sendall('ERRO'.encode())
@@ -73,23 +96,30 @@ class Application:
             except Exception as e:
                 print('Erro no servidor:', e)
 
-    def receber_requisicao(self, event):
-        self.tela_consultorio.config(foreground=self.cor_alerta)
+    #esse método faz a cor da tela mudar de cor para preto e faz parar a reprodução do audio de alerta
+    def receber_requisicao(self, request):
+        # Obtém o número do consultório da solicitação
+        if request:
+            consultorio = str(request).split('-')[0]
 
-        temp_dir = tempfile.mkdtemp()
-        try:
-            with open('Servidor-Botao-Panico-main\Alerta.wav', 'rb') as arquivo:
-                if os.path.exists(arquivo.name):
-                    stream = playsound(arquivo, block=True, tempdir=temp_dir)
-                else:
-                    raise FileNotFoundError
-        finally:
-            # Limpar o diretório temporário
-            shutil.rmtree(temp_dir)
+        # Aciona a tela correta
+        if consultorio == 'consultorio1':
+            self.tela_consultorio1.config(foreground=self.cor_alerta)
+        else:
+            self.tela_consultorio2.config(foreground=self.cor_alerta)
+
+        # Para a reprodução de áudio
+        pygame.mixer.stop()
 
         # Muda a cor da tela para preto
-        self.tela_consultorio.config(foreground=self.cor_padrao)
-
+        self.tela_consultorio1.config(foreground=self.cor_padrao)
+        
+    #faz a interface gráfica ser exibida na tela
     def mainloop(self):
         self.root.mainloop()
 
+#método principal que inicia a plicação
+if __name__ == '__main__':
+    root = Tk()
+    app = Application(root)
+    root.mainloop()
