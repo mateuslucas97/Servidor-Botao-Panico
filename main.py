@@ -7,7 +7,6 @@ from tkinter import *
 
 
 IP_SERVIDOR = '10.16.90.122'
-stream = None
 
 class Application:
     def __init__(self, root):
@@ -16,9 +15,13 @@ class Application:
         self.tela()
         self.tela2()
         self.tela3()
+        self.tela4()
+        self.tela5()
         self.botao()
         self.botao2()
         self.botao3()
+        self.botao4()
+        self.botao5()
         self.cor_padrao = 'black'
         self.cor_alerta = 'red'
         self.servidor = True
@@ -82,6 +85,32 @@ class Application:
         # Liga o clique com o botão esquerdo do mouse aos dois métodos
         self.botao_stop3.bind('<Button-1>', lambda event: self.receber_requisicao(event))
 
+    def tela4(self):
+        self.tela_consultorio4 = Label(self.root, text='Consultorio4')
+        self.tela_consultorio4.place(x=320, y=5, width=100, height=85)
+        self.tela_consultorio4.config(font=('Arial', 13))
+
+    def botao4(self):
+        self.botao_stop4 = Button(self.root, text='Parar')
+        self.botao_stop4.config(font=('Arial', 20))
+        self.botao_stop4.place(x=320, y=100, width=100, height=50)
+        
+        # Liga o clique com o botão esquerdo do mouse aos dois métodos
+        self.botao_stop4.bind('<Button-1>', lambda event: self.receber_requisicao(event))
+
+    def tela5(self):
+        self.tela_consultorio5 = Label(self.root, text='Consultorio5')
+        self.tela_consultorio5.place(x=425, y=5, width=100, height=85)
+        self.tela_consultorio5.config(font=('Arial', 13))
+
+    def botao5(self):
+        self.botao_stop5 = Button(self.root, text='Parar')
+        self.botao_stop5.config(font=('Arial', 20))
+        self.botao_stop5.place(x=425, y=100, width=100, height=50)
+        
+        # Liga o clique com o botão esquerdo do mouse aos dois métodos
+        self.botao_stop5.bind('<Button-1>', lambda event: self.receber_requisicao(event))
+
     def start_server(self):
         log_file = open('log.txt', 'a')
 
@@ -119,6 +148,10 @@ class Application:
                         self.tela_consultorio2.config(foreground=self.cor_alerta)
                     case 'alerta,Consultorio3':
                         self.tela_consultorio3.config(foreground=self.cor_alerta)
+                    case 'alerta,Consultorio4':
+                        self.tela_consultorio4.config(foreground=self.cor_alerta)
+                    case 'alerta,Consultorio5':
+                        self.tela_consultorio5.config(foreground=self.cor_alerta)
                         
                     # Cria um objeto pygame
                 sound = pygame.mixer.Sound('Servidor-Botao-Panico-main\Alerta.wav')
@@ -153,6 +186,8 @@ class Application:
         self.tela_consultorio1.config(foreground=self.cor_padrao)
         self.tela_consultorio2.config(foreground=self.cor_padrao)
         self.tela_consultorio3.config(foreground=self.cor_padrao)
+        self.tela_consultorio4.config(foreground=self.cor_padrao)
+        self.tela_consultorio5.config(foreground=self.cor_padrao)
 
 
 def mainloop(self):
