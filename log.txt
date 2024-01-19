@@ -1,0 +1,48 @@
+2024-01-18 14:08:15.121371 - alerta,Consultorio2
+2024-01-18 14:10:23.105389 - alerta,Consultorio1
+2024-01-18 14:11:06.001828 - alerta,Consultorio3
+2024-01-18 14:12:25.393071 - alerta,Consultorio3
+2024-01-18 14:12:30.057303 - alerta,Consultorio3
+2024-01-18 14:12:43.483552 - alerta,Consultorio1
+2024-01-18 14:12:46.641598 - alerta,Consultorio1
+18-01-2024 - alerta,Consultorio1
+18-01-2024 - alerta,Consultorio1
+18-01-2024 - alerta,Consultorio1
+18-01-2024 14:16:16 - alerta,Consultorio1
+18-01-2024 14:16:20 - alerta,Consultorio1
+18-01-2024 14:16:24 - alerta,Consultorio1
+19-01-2024 14:06:25 - 
+19-01-2024 14:08:12 - 
+19-01-2024 14:08:41 - alerta,Consultorio1
+19-01-2024 14:10:06 - 
+19-01-2024 14:10:38 - 
+19-01-2024 14:11:16 - 
+19-01-2024 14:11:53 - 
+19-01-2024 14:14:01 - 
+19-01-2024 14:15:59 - alerta,Consultorio2
+19-01-2024 14:19:07 - 
+19-01-2024 14:20:07 - 
+19-01-2024 14:21:56 - alerta,Consultorio5
+19-01-2024 14:22:57 - 
+19-01-2024 14:23:34 - 
+19-01-2024 14:29:41 - 
+19-01-2024 14:47:20 - alerta,Consultorio5
+19-01-2024 14:48:40 - alerta,Consultorio5
+19-01-2024 14:50:20 - 
+19-01-2024 14:51:13 - 
+19-01-2024 14:53:56 - 
+19-01-2024 14:56:11 - 
+19-01-2024 14:56:25 - 
+19-01-2024 14:58:19 - 
+19-01-2024 15:00:58 - alerta,
+19-01-2024 15:03:31 - alerta,Consultorio5
+19-01-2024 15:10:00 - alerta,Consultorio1
+19-01-2024 15:10:24 - alerta,Consultorio2
+19-01-2024 15:12:24 - 
+19-01-2024 15:12:53 - alerta,Consultorio1
+19-01-2024 15:13:09 - alerta,Consultorio1
+19-01-2024 15:13:34 - alerta,Consultorio2
+19-01-2024 15:13:54 - alerta,Consultorio3
+19-01-2024 15:14:18 - alerta,Consultorio4
+19-01-2024 15:14:39 - alerta,Consultorio5
+19-01-2024 16:11:21 - alerta,Consultorio2
