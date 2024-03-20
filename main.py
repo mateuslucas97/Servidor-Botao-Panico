@@ -10,14 +10,13 @@ from datetime import datetime
 from threading import Thread
 from tkinter import *
 
-IP_SERVIDOR = '10.16.90.208'
-PORTA = '8080'
+IP_SERVIDOR = '10.16.90.122'
 
 class Application:
     def __init__(self, root):
         self.root = root
         self.janela()
-        self.tela()
+        self.tela1()
         self.tela2()
         self.tela3()
         self.tela4()
@@ -36,7 +35,7 @@ class Application:
         self.tela17()
         self.tela18()
         self.tela19()
-        self.botao()
+        self.botao1()
         self.botao2()
         self.botao3()
         self.botao4()
@@ -83,19 +82,19 @@ class Application:
         self.root.resizable(True, True)
 
     #Cria a tela para exibir o texto "Consultorio1"
-    def tela(self):
+    def tela1(self):
         self.tela_consultorio1 = Label(self.root, text='Consultorio1')
         self.tela_consultorio1.place(x=5, y=5, width=100, height=85)
         self.tela_consultorio1.config(font=('Arial', 13))
 
     # cria o botao "Stop"
-    def botao(self):
-        self.botao_stop = Button(self.root, text='Parar')
-        self.botao_stop.config(font=('Arial', 20))
-        self.botao_stop.place(x=5, y=100, width=100, height=50)
+    def botao1(self):
+        self.botao_stop1 = Button(self.root, text='Parar')
+        self.botao_stop1.config(font=('Arial', 20))
+        self.botao_stop1.place(x=5, y=100, width=100, height=50)
         
         # Liga o clique com o botão esquerdo do mouse aos dois métodos
-        self.botao_stop.bind('<Button-1>', lambda event: self.receber_requisicao(event))
+        self.botao_stop1.bind('<Button-1>', lambda event: self.receber_requisicao(event))
 
     def tela2(self):
         self.tela_consultorio2 = Label(self.root, text='Consultorio2')
@@ -339,9 +338,6 @@ class Application:
         #inicia o audio
         pygame.mixer.init() 
         
-        #path_audio = pathlib.Path(r"C:\Users\Usuário\Desktop\Servidor-Botao-Panico-main\Servidor-Botao-Panico-main\Alerta.mp3")
-        #path_audio = pathlib.Path("Alerta.mp3")
-        
         # Obter o diretório onde o executável está localizado
         base_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -349,20 +345,16 @@ class Application:
         audio_path = os.path.join(base_dir, 'Alerta.mp3')
         
         sound = pygame.mixer.Sound(audio_path)
-        #sound = pygame.mixer.Sound(str(path_audio))
 
         # Cria um socket TCP/IP
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         # Associa o socket a uma porta
-        sock.bind((IP_SERVIDOR, 8090))
-
+        sock.bind((IP_SERVIDOR, 8080))
 
         # coloca o socket em modo de escuta
         sock.listen(1)
-        
-        
-   
+          
         while self.servidor:
             try:
                 # Aceita a conexao de um cliente
@@ -384,87 +376,66 @@ class Application:
                 match request:
                     case 'alerta,Consultorio1':
                         self.tela_consultorio1.config(foreground=self.cor_alerta)
-                        # Play alert sound using Pygame (assuming sound object is created)
-                        #sound = pygame.mixer.Sound(str(path_audio))  # Convert path to string for Pygame
                         sound.play()
                     case 'alerta,Consultorio2':
                         self.tela_consultorio2.config(foreground=self.cor_alerta)
-                       # sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio3':
                         self.tela_consultorio3.config(foreground=self.cor_alerta)
-                        #sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio4':
                         self.tela_consultorio4.config(foreground=self.cor_alerta)
-                       # sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio5':
                         self.tela_consultorio5.config(foreground=self.cor_alerta)
-                        #sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio6':
                         self.tela_consultorio6.config(foreground=self.cor_alerta)
-                       # sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio7':
                         self.tela_consultorio7.config(foreground=self.cor_alerta)
-                       # sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio8':
                         self.tela_consultorio8.config(foreground=self.cor_alerta)
-                        #sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio9':
                         self.tela_consultorio9.config(foreground=self.cor_alerta)
-                       # sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio10':
                         self.tela_consultorio10.config(foreground=self.cor_alerta)
-                       # sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio11':
                         self.tela_consultorio11.config(foreground=self.cor_alerta)
-                       # sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio12':
                         self.tela_consultorio12.config(foreground=self.cor_alerta)
-                       # sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio13':
                         self.tela_consultorio13.config(foreground=self.cor_alerta)
-                       # sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio14':
                         self.tela_consultorio14.config(foreground=self.cor_alerta)
-                       # sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio15':
                         self.tela_consultorio15.config(foreground=self.cor_alerta)
-                        #sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio16':
                         self.tela_consultorio16.config(foreground=self.cor_alerta)
-                       # sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio17':
                         self.tela_consultorio17.config(foreground=self.cor_alerta)
-                       # sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio18':
                         self.tela_consultorio18.config(foreground=self.cor_alerta)
-                       # sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
                     case 'alerta,Consultorio19':
                         self.tela_consultorio19.config(foreground=self.cor_alerta)
-                        #sound = pygame.mixer.Sound(str(path_audio))
                         sound.play()
-                        
-                                        
-                     # Envia uma resposta ao cliente
+                                             
+                # Envia uma resposta ao cliente
                 connection.sendall('Chamado recebido!'.encode())             
 
-                    # Envia uma resposta ao cliente
+                # Envia uma resposta ao cliente
                 connection.sendall('ERRO'.encode())
 
                 # fecha a conexao com o cliente
@@ -472,8 +443,6 @@ class Application:
 
             except Exception as e:
                 print('Erro no servidor:', e)
-
-            
 
     #Altera a cor da tela "ConsultorioX" para preto e para de tocar o audio
     def receber_requisicao(self, sound):   
